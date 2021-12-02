@@ -21,27 +21,30 @@
   }
 </style>
 </head>
-<body><div id="readme" class="container"><article class="markdown-body entry-content"><h2 id="requirements">Requirements</h2>
+<body><div id="readme" class="container"><article class="markdown-body entry-content"><h1 id="apriltag-clips-construction-guide">AprilTag Clips Construction guide</h1>
+<p>The AprilTag Clips are 3D-printed spring-loaded clips with <a href="https://roboticsknowledgebase.com/wiki/sensing/apriltags/">AprilTags</a> pasted on them that get mounted on the corners of a computer monitor so that the CursorControl plugin can work out the position of the monitor's screen on the image frames of the PupilCore headset's World Camera.</p>
+<h2 id="materials-and-tools">Materials and Tools</h2>
 <ul>
-<li>PupilCore headset</li>
-<li>computer with Pupil Capture installed</li>
 <li>access to a 3D Printer and a 2D (paper) Printer</li>
 <li>4 coil springs of about 5mmm diameter and 15mm length (or similar)</li>
+<li>most likely a 3D-modelling program (such as <a href="https://www.blender.org/">Blender</a>) to optimise the 3D-printed clips' shapes and sizes for your monitor</li>
 </ul>
+<h2 id="method">Method</h2>
 <ol>
-<li><p>Print out the Clips-3D-Prints/ClipsCompleteSet.stl file on a 3D printer.</p>
-<p><img src="Slicer.png" alt="IMAGE OF 3D PRINTED PARTS"></p>
+<li><p>Print out the <em>AprilTag-Clips/3D-Prints/ClipsCompleteSet.stl</em> file on a 3D printer.
+<img src="3D-Print-Clips.jpg" alt="IMAGE OF 3D PRINTED PARTS"></p>
 </li>
-<li><p>Each clip is composed of 2 3D-Prints and a spring. Position the 3 components as shown in the pictures below, making sure the spring is seated properly in the holes of both 3D-printed parts, and press the two 3D printed parts together around the hinge, so that they lock into place with a click. If your springs don't fit properly into your 3D printed parts, adjust the 3D-models of the clips in a 3D-modelling program (such as <a href="https://www.blender.org/">Blender</a>).</p>
+<li><p>Each clip is composed of two 3D-prints and a spring. Position the 3 components as shown in the second picture from the left below, making sure the spring is seated properly in the holes of both 3D-printed parts, then press the two 3D printed parts together around the hinge, so that they lock into place with a click. If your springs don't fit properly into your 3D printed parts, adjust the 3D-models of the clips in a 3D-modelling program (such as <a href="https://www.blender.org/">Blender</a>).
+<img src="ClipAssymbly.jpg" alt="CLIP ASSEMBLY"></p>
 </li>
-<li><p>Print out (on paper) the AprilTagsPrintout.pdf file. Cut out 4 different AprilTags from the piece of paper. They should have an edge length of 16mm-17mm. Paste the paper AprilTags on the 3D-Prints as shown below, observing which of the different AprilTags goes on which 3D-Printed clip, as well as the orientation of the AprilTags.</p>
-<p><img src="" alt="IMAGE OF APRILTAGS PASTED ON CLIPS"></p>
+<li><p>Print out (on paper) the AprilTagsPrintout.pdf file. Cut out 4 different AprilTags from the piece of paper. They should have an edge length of 16mm-17mm. Paste the paper AprilTags on the 3D-Prints as shown below, observing which of the different AprilTags goes on which 3D-Printed clip, as well as the orientation of the AprilTags.
+<img src="AprilTagsPasted.jpg" alt="IMAGE OF APRILTAGS PASTED ON CLIPS"></p>
 </li>
-<li><p>Test the clips to make sure they fit on your monitor. Check that following conditions which be met in order the the CursorControl to work properly are true:</p>
+<li><p>Mount the clips on the corners of your monitor, again making sure the correct clip goes on the correct corner. Check that following conditions which be met in order the the CursorControl to work properly are true:</p>
 <ul>
-<li>The AprilTags must be located in the areas marked in blue relative to the screen.</li>
+<li>The centres of the AprilTags MUST be located in the areas marked in blue relative to the extrapolated edges of the screen's outline (red).</li>
 </ul>
-<p><img src="" alt="IMAGE OF APRILTAG CLIPS MOUNTED ON MONITOR SHOWING APRILTAG POSITION ZONES"></p>
+<p><img src="AprilTagClipPositioning.png" alt="IMAGE OF APRILTAG CLIPS MOUNTED ON MONITOR SHOWING APRILTAG POSITION ZONES"></p>
 <p>Adjust the 3D-models of the clips in a 3D-modelling program (such as <a href="https://www.blender.org/">Blender</a>) to fit properly on your monitor and reprint them.</p>
 </li>
 </ol>
