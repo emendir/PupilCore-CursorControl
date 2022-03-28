@@ -16,6 +16,8 @@ from CursorControl.Line import *
 from CursorControl import mouse
 
 from CursorControl.CalibrationScreen import CalibrationScreen
+from CursorControl import MouseClicks
+# from threading import Thread
 
 print("Running MonitorRecognition")
 
@@ -32,6 +34,7 @@ cur_pos_index = 0  # index of most recent value in the above list
 
 
 class CursorControl(Plugin):
+    order = 0.81  # order must be greater than 0.8, which is the execution order of the WinkDetection plugin
     # whether or not we have already completed the Screen-Calibration
     screen_calibrated = False
     calibration_screen = None   # CalibrationScreen object
@@ -52,6 +55,7 @@ class CursorControl(Plugin):
         self.monitor = glfw.get_primary_monitor()
         self.video_mode = glfw.get_video_mode(self.monitor)
         self.screen_resolution = self.video_mode.size   # size of the screen in pixels
+        # MouseClicks.Start()
 
     def gl_display(self):
         """This function gets called periodically during runtime.
@@ -359,8 +363,7 @@ class CursorControl(Plugin):
                             mouse.move(gaze_stabilised_x, gaze_stabilised_y)
 
     def recent_events(self, events):
-        """Gets the latest values of the user's eye-gaze-point
-            relative to the WorldCamra image"""
+        """Gets the latest values eye-gaze and plugin data."""
         gaze = events["gaze"]
         if gaze and len(gaze) > 0:
             basedata = gaze[0].get('base_data')
@@ -371,8 +374,12 @@ class CursorControl(Plugin):
                     return
                 loc = gaze[0].get('norm_pos')
                 fs = self.g_pool.capture.frame_size  # frame height
-                self.gaze_location = denormalize(
-                    loc, fs, flip_y=True)
+                # user's eye-gaze-point relative to the WorldCamra image
+                self.gaze_location = denormalize(loc, fs, flip_y=True)
+        if "winks" in events:   # if the WinkDetection plugin is loaded
+            data = events["winks"]
+            if data:
+                MouseClicks.ProcessSignal(data[0])
 
     def DrawTagOutline(self, tag):
         """Draws the outline of the input AprilTag on PupilCapture's

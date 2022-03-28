@@ -5,12 +5,12 @@ The software part of this project is a plugin for PupilLabs' [Pupil Capture](htt
 CursorControl also requires mounting external clips on the corners of the monitor for the plugin to be able to see the monitor using PupilCore's World Camera.
 
 ## Project Stage of Development
-So far I have focussed on getting monitor recognition on the image frames of the World Camera video stream to work reliably and on accurately mapping the user's gaze from it's position on the World Camera video stream to the user's screen, then moving the cursor to that position.  
+So far I have focussed on getting monitor recognition on the image frames of the World Camera video stream to work reliably and on accurately mapping the user's gaze from it's position on the World Camera video stream to the user's screen, then moving the cursor to that position. Mouse-click simulation with eye winks has also now been implemented.  
 The project is therefore currently at a proof-of-concept stage, demonstrating that an almost usable accuracy (up to around 50px on a 1920×1080px screen, an error of roughly 3% relative to the screen's width) can be achieved for cursor control using PupilCore's eye-tracking.
 
 #### ToDo
 __Gaze Mapping World-Camera to Screen:__ The current mathematical algorithm which maps the user's gaze position from the World Camera's image frame to the user's screen assumes that the image of the screen on the World Camera is approximately rectangular. A more complex algorithm that does not make this approximation should yield more accurate results.  
-__Mouse Button Control:__ A lot of different methods can be used to simulate mouse clicks, such as winks, mouth-movements or keystrokes.  
+__Cursor Clicks:__ A lot of different methods can be used to simulate mouse clicks, such as winks, mouth-movements or keystrokes (currently only eye winks are implemented).  
 __Plugin Menu:__ As users are highly likely to want to experiment with and customise the mouse-clicks part of CursorControl, I should also build a GUI plugin settings menu for this (and other things).  
 
 ## Requirements
@@ -36,7 +36,7 @@ The 2D-Pupil-Calibration yields greater accuracy than 3D Pupil-Calibration, but 
 
 ## Installation and Setup
 1. __Create AprilTag clips:__ Follow the guide on [AprilTag Clip Construction](AprilTag-Clips/AprilTagClipConstruction.md) to create your own AprilTag clips for the monitor you want to use this CursorControl plugin on.
-2. __Add the CursorControl plugin to Pupil Capture:__ Install PupilLabs' [Pupil Capture](https://docs.pupil-labs.com/core/#_1-put-on-pupil-core) on your computer if you don't already have it. Copy this project's _Code/CursorControl_ folder into the 'plugins' folder of PupilCapture. See [PupilCore's website](https://docs.pupil-labs.com/developer/core/plugin-api/#adding-a-plugin) on locating the plugins folder and details about adding plugins to PupilCore. The directory structure of the plugins folder should look something like this:
+2. __Add the CursorControl and WinkDetector plugins to Pupil Capture:__ Install PupilLabs' [Pupil Capture](https://docs.pupil-labs.com/core/#_1-put-on-pupil-core) on your computer if you don't already have it. Copy this project's _Code/CursorControl_ folder and the [WinkDetector plugin](https://github.com/emendir/PupilCore-WinkDetector) into the 'plugins' folder of PupilCapture. See [PupilCore's website](https://docs.pupil-labs.com/developer/core/plugin-api/#adding-a-plugin) on locating the plugins folder and details about adding plugins to PupilCore. The directory structure of the plugins folder should look something like this:
   ![](PluginsDirectory.png)
 3. Make sure you are in a well-lit room. Mount your AprilTag clips from step 1 on your monitor, connect your PupilCore headset to your computer and wear it, then run Pupil Capture. Make sure that the World Camera can see your entire monitor and all of the AprilTag-clips (you might need to change the lens you are using for the world camera). Run Pupil Capture's pupil-calibration (I recommend the screen marker choreography). If you are new to using PupilCore, read [PupilLab's starter guide](https://docs.pupil-labs.com/core/#_1-put-on-pupil-core) first.  
 Practise in the Pupil-Calibration process is essential for good accuracy in CursorControl.
@@ -52,6 +52,8 @@ Practise in the Pupil-Calibration process is essential for good accuracy in Curs
 5. Using the World Camera video stream visualisation built into Pupil Capture, ensure that the screen-recognition works correctly by observing the red lines that should outline the screen on the video stream as shown in the picture above. You may have to move your head backwards so that the CursorControl plugin doesn't recognise the AprilTag-clips displayed on-screen in the video-stream!
   
     If all went well, your computer's cursor will start moving to wherever Pupil Capture thinks you're looking on the screen!
+    
+    Winking with your right eye will produce a right click, winking your left a left click. Winking twice with your left will produce a double-click.
 
 ## Bugs
 - When starting PupilCapture with the CursorControl plugin already enabled, the ScreenCalibration-screen is shown and then minimised by the appearance of the other Pupil Capture windows. One must switch windows back to the ScreenCalibration-screen to proceed.
