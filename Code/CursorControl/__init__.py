@@ -1,6 +1,5 @@
 from methods import denormalize
 from plugin import Plugin
-
 import glfw
 from pyglui import ui
 from pyglui.cygl.utils import RGBA, draw_polyline
@@ -13,6 +12,7 @@ from math import sqrt, atan, pi, cos, sin
 import time
 
 from CursorControl.Line import *
+from CursorControl.CoordinateMapper import MapCoordinates
 from CursorControl import mouse
 
 from CursorControl.CalibrationScreen import CalibrationScreen
@@ -272,54 +272,70 @@ class CursorControl(Plugin):
                     )
 
                     if self.gaze_location:   # if PupilCore has gaze location values
-                        # NOTE: this code approximates the shape of the screen
-                        #       as it appears on the WorldCamera image to a rectangle
-
-                        # the rotation of the screen relative to the WorldCameraImage
-                        av_slope = (scr_top.v + scr_bot.v) / 2
-                        screen_rotation = atan(av_slope)
-
-                        # coordinates of user's gaze-point on the WorldCamera image
-                        # relative to top left screen corner
-                        gaze_img_rel_x = self.gaze_location[0] - scr_2[0]
-                        gaze_img_rel_y = self.gaze_location[1] - scr_2[1]
-
-                        # calculating the angle of the line joining
-                        # the gaze point and the top left screen corner
-                        if gaze_img_rel_x == 0:
-                            angle_abs = pi / 2
-                        else:
-                            angle_abs = atan(gaze_img_rel_y / gaze_img_rel_x)
-
-                        # calculating the angle of the line joining
-                        # the gaze point and the top left screen corner
-                        # relative to the orientation (angle)
-                        # of the screen on the WorldCamera image
-                        angle_rel = angle_abs - screen_rotation
-
-                        # calculating the distance between the user's gaze-position and
-                        # the top left corner of the screen on the WordCamera image
-                        d = DistanceTwixPoints(self.gaze_location, scr_2)
-
-                        # calculating the width and height of the screen
-                        # on to the WordCamera image
-                        screen_width = (DistanceTwixPoints(scr_0, scr_1) +
-                                        DistanceTwixPoints(scr_2, scr_3)) / 2
-                        screen_height = (DistanceTwixPoints(scr_0, scr_2) +
-                                         DistanceTwixPoints(scr_1, scr_3)) / 2
-
-                        # calculating the position of the user's gaze
-                        # relative to the monitor/screen's own pixel-coordinate-system
-                        #   Note: the calib_marker_pixel_size is there to compensate
-                        #   for the fact that the AprilTags used during ScreenCalibration
-                        #   are a slight distance away from the corners of the screen
-                        gaze_scr_x = int(cos(angle_rel) * d
-                                         * (self.screen_resolution[0] - 2 * self.calib_marker_pixel_size) / screen_width) \
-                            + self.calib_marker_pixel_size
-                        gaze_scr_y = int(sin(angle_rel) * d
-                                         * (self.screen_resolution[1] - 2 * self.calib_marker_pixel_size) / screen_height)   \
-                            + self.calib_marker_pixel_size
-
+                        # # NOTE: this code approximates the shape of the screen
+                        # #       as it appears on the WorldCamera image to a rectangle
+                        #
+                        # # the rotation of the screen relative to the WorldCameraImage
+                        # av_slope = (scr_top.v + scr_bot.v) / 2
+                        # screen_rotation = atan(av_slope)
+                        #
+                        # # coordinates of user's gaze-point on the WorldCamera image
+                        # # relative to top left screen corner
+                        # gaze_img_rel_x = self.gaze_location[0] - scr_2[0]
+                        # gaze_img_rel_y = self.gaze_location[1] - scr_2[1]
+                        #
+                        # # calculating the angle of the line joining
+                        # # the gaze point and the top left screen corner
+                        # if gaze_img_rel_x == 0:
+                        #     angle_abs = pi / 2
+                        # else:
+                        #     angle_abs = atan(gaze_img_rel_y / gaze_img_rel_x)
+                        #
+                        # # calculating the angle of the line joining
+                        # # the gaze point and the top left screen corner
+                        # # relative to the orientation (angle)
+                        # # of the screen on the WorldCamera image
+                        # angle_rel = angle_abs - screen_rotation
+                        #
+                        # # calculating the distance between the user's gaze-position and
+                        # # the top left corner of the screen on the WordCamera image
+                        # d = DistanceTwixPoints(self.gaze_location, scr_2)
+                        #
+                        # # calculating the width and height of the screen
+                        # # on to the WordCamera image
+                        # screen_width = (DistanceTwixPoints(scr_0, scr_1) +
+                        #                 DistanceTwixPoints(scr_2, scr_3)) / 2
+                        # screen_height = (DistanceTwixPoints(scr_0, scr_2) +
+                        #                  DistanceTwixPoints(scr_1, scr_3)) / 2
+                        #
+                        # # calculating the position of the user's gaze
+                        # # relative to the monitor/screen's own pixel-coordinate-system
+                        # #   Note: the calib_marker_pixel_size is there to compensate
+                        # #   for the fact that the AprilTags used during ScreenCalibration
+                        # #   are a slight distance away from the corners of the screen
+                        # gaze_scr_x = int(cos(angle_rel) * d
+                        #                  * (self.screen_resolution[0] - 2 * self.calib_marker_pixel_size) / screen_width) \
+                        #     + self.calib_marker_pixel_size
+                        # gaze_scr_y = int(sin(angle_rel) * d
+                        #                  * (self.screen_resolution[1] - 2 * self.calib_marker_pixel_size) / screen_height)   \
+                        #     + self.calib_marker_pixel_size
+                        scr_upright_coordinates = [
+                            (scr_0[0], self.screen_resolution[1]-scr_0[1]),
+                            (scr_1[0], self.screen_resolution[1]-scr_1[1]),
+                            (scr_2[0], self.screen_resolution[1]-scr_2[1]),
+                            (scr_3[0], self.screen_resolution[1]-scr_3[1]),
+                        ]
+                        result = MapCoordinates(
+                            (self.gaze_location[0], self.gaze_location[1]),
+                            scr_upright_coordinates,
+                            (self.screen_resolution[0], self.screen_resolution[1])
+                        )
+                        if not result:
+                            return
+                        gaze_scr_x, gaze_scr_y = result
+                        gaze_scr_y = self.screen_resolution[1]+gaze_scr_y
+                        # print(gaze_scr_x, gaze_scr_y)
+                        # print([scr_0, scr_1, scr_2, scr_3])
                         # if the measured gaze is only slightly outside of the
                         # screen area, set the gaze point to the screen's edge
                         edge_tolerance = 160  # distance in screen-pixels
@@ -361,6 +377,8 @@ class CursorControl(Plugin):
 
                             # moving the cursor to the user's gaze point
                             mouse.move(gaze_stabilised_x, gaze_stabilised_y)
+                        else:
+                            print("Gaze is out of bounds.", gaze_scr_x, gaze_scr_y)
 
     def recent_events(self, events):
         """Gets the latest values eye-gaze and plugin data."""

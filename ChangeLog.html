@@ -21,54 +21,12 @@
   }
 </style>
 </head>
-<body><div id="readme" class="container"><article class="markdown-body entry-content"><h1 id="pupilcore-cursorcontrol-plugin">PupilCore CursorControl Plugin</h1>
-<p>A system for using <a href="https://pupil-labs.com/">PupilLabs</a>' eye-tracking <a href="https://pupil-labs.com/products/core/">PupilCore</a> headset to control your computer's cursor with your eyes. </p>
-<p>The software part of this project is a plugin for PupilLabs' <a href="https://docs.pupil-labs.com/core/#_1-put-on-pupil-core">Pupil Capture</a> program. To use CursorControl, one runs Pupil Capture and enables the CursorControl Plugin.<br>CursorControl also requires mounting external clips on the corners of the monitor for the plugin to be able to see the monitor using PupilCore's World Camera.</p>
-<h2 id="project-stage-of-development">Project Stage of Development</h2>
-<p>So far I have focussed on getting monitor recognition on the image frames of the World Camera video stream to work reliably and on accurately mapping the user's gaze from it's position on the World Camera video stream to the user's screen, then moving the cursor to that position. Mouse-click simulation with eye winks has also now been implemented.<br>The project is therefore currently at a proof-of-concept stage, demonstrating that an almost usable accuracy (up to around 50px on a 1920×1080px screen, an error of roughly 3% relative to the screen's width) can be achieved for cursor control using PupilCore's eye-tracking.</p>
-<h4 id="todo">ToDo</h4>
-<p><strong>Cursor Clicks:</strong> A lot of different methods can be used to simulate mouse clicks, such as winks, mouth-movements or keystrokes (currently only eye winks are implemented).<br><strong>Plugin Menu:</strong> As users are highly likely to want to experiment with and customise the mouse-clicks part of CursorControl, I should also build a GUI plugin settings menu for this (and other things).  </p>
-<h2 id="requirements">Requirements</h2>
-<ul>
-<li>PupilCore headset</li>
-<li>computer with Pupil Capture installed</li>
-<li>access to a 3D Printer and a 2D (paper) Printer</li>
-<li>4 coil springs of 5mmm diameter and 15mm length (or similar) </li>
-</ul>
-<h2 id="external-ariltag-clips">External ArilTag Clips</h2>
-<p>For the CursorControl system to be able to accurately detect the position of the monitor on image frames from the video stream of the PupilCore headset's World Camera, we create 3D-printed clips onto which we paste <a href="https://roboticsknowledgebase.com/wiki/sensing/apriltags/">AprilTags</a> which we can mount on the corner's of the monitor as shown in the picture below. The CursorControl plugin detects the positions of the AprilTags, then works out the shape and position of the monitor's screen's outline on the World Camera's image. See <a href="AprilTag-Clips/AprilTagClipConstruction.md">AprilTag Clip Construction</a> for a step-by-step guide on making the AprilTag clips.</p>
-<p><img src="PhysicalSetup.png" alt="IMAGE OF MONITOR WITH APRILTAG CLIPS"></p>
-<h3 id="apriltag-screen-calibration">AprilTag Screen-Calibration</h3>
-<p>For the CursorControl system to be able to work out the monitor's screen's outline given the positions of the external Aprilag clips, a calibration process is performed when the plugin starts running. This process involves displaying 4 AprilTags in the corners of the screen, so that the PupilCore headset's WorldCamera sees a monitor with 4 AprilTags physically printed onto clips mounted on the corners of the monitor and 4 AprilTags displayed by the monitor's screen, in its corners. When the CursorControl plugin sees the 4 physical AprilTags on the clips and the 4 displayed AprilTags representing the corners of the screen, it measures and rembers the relative positions of the physical AprilTags and the corners of the screen, so that it can later (during normal runtime) work out the postion of the screen's corners using just the 4 physical AprilTags on the 3D-printed clips.
-<img src="ScreenCalibration.png" alt=""></p>
-<h3 id="a-note-on-pupil-calibration">A Note on Pupil Calibration</h3>
-<p>The 2D-Pupil-Calibration yields greater accuracy than 3D Pupil-Calibration, but has its own downsides. <a href="https://docs.pupil-labs.com/core/best-practices/#choose-the-right-gaze-mapping-pipeline">Read the details on PupilCore's website</a>.</p>
-<p><img src="Pupil-Calibration-2D.png" alt=""></p>
-<h2 id="installation-and-setup">Installation and Setup</h2>
-<ol>
-<li><strong>Create AprilTag clips:</strong> Follow the guide on <a href="AprilTag-Clips/AprilTagClipConstruction.md">AprilTag Clip Construction</a> to create your own AprilTag clips for the monitor you want to use this CursorControl plugin on.</li>
-<li><strong>Add the CursorControl and WinkDetector plugins to Pupil Capture:</strong> Install PupilLabs' <a href="https://docs.pupil-labs.com/core/#_1-put-on-pupil-core">Pupil Capture</a> on your computer if you don't already have it. Copy this project's <em>Code/CursorControl</em> folder and the <a href="https://github.com/emendir/PupilCore-WinkDetector">WinkDetector plugin</a> into the 'plugins' folder of PupilCapture. See <a href="https://docs.pupil-labs.com/developer/core/plugin-api/#adding-a-plugin">PupilCore's website</a> on locating the plugins folder and details about adding plugins to PupilCore. The directory structure of the plugins folder should look something like this:
-<img src="PluginsDirectory.png" alt=""></li>
-<li>Make sure you are in a well-lit room. Mount your AprilTag clips from step 1 on your monitor, connect your PupilCore headset to your computer and wear it, then run Pupil Capture. Make sure that the World Camera can see your entire monitor and all of the AprilTag-clips (you might need to change the lens you are using for the world camera). Run Pupil Capture's pupil-calibration (I recommend the screen marker choreography). If you are new to using PupilCore, read <a href="https://docs.pupil-labs.com/core/#_1-put-on-pupil-core">PupilLab's starter guide</a> first.<br>Practise in the Pupil-Calibration process is essential for good accuracy in CursorControl.</li>
-<li><p>Enable the plugin to run it:</p>
-<p> <img src="EnablePlugin.png" alt=""></p>
-<p> The Screen-Calibration window will fill your monitor's screen, disappearing automatically as soon as the CursorControl plugin can recognise all the physical AprilTags on the clips as well as the on-screen ones. If the calibration screen does not disappear after a few seconds, make sure that the physical AprilTags get enough light, and that the World Camera can see all the AprilTags (you can check this by switching windows to Pupil Capture, e.g. using the keyboard shortcut of ALT+TAB or CMD+TAB).<br> The AprilTags should be outlined in red.</p>
-<p> <img src="PupilCapture.png" alt="PUPIL CAPTURE APRIL TAGS AND SCREEN OUTLINED IN RED"></p>
-</li>
-<li><p>Using the World Camera video stream visualisation built into Pupil Capture, ensure that the screen-recognition works correctly by observing the red lines that should outline the screen on the video stream as shown in the picture above. You may have to move your head backwards so that the CursorControl plugin doesn't recognise the AprilTag-clips displayed on-screen in the video-stream!</p>
-<p> If all went well, your computer's cursor will start moving to wherever Pupil Capture thinks you're looking on the screen!</p>
-<p> Winking with your right eye will produce a right click, winking your left a left click. Winking twice with your left will produce a double-click.</p>
-</li>
-</ol>
-<h2 id="bugs">Bugs</h2>
-<ul>
-<li>When starting PupilCapture with the CursorControl plugin already enabled, the ScreenCalibration-screen is shown and then minimised by the appearance of the other Pupil Capture windows. One must switch windows back to the ScreenCalibration-screen to proceed.</li>
-<li>Disabling the CursorControl plugin seems to cause Pupil Capture to stop responding for some reason.</li>
-</ul>
-<p>Tested on Ubuntu 20.</p>
-<h2 id="links">Links</h2>
-<p>This project is also hosted on IPFS.</p>
-<p>Source Code: <a href="https://ipfs.io/ipns/k2k4r8nekx5gmqjhqpx9h6vowf39bkxgkw8sm2nbz3o1d7su0eigaaq8">https://ipfs.io/ipns/k2k4r8nekx5gmqjhqpx9h6vowf39bkxgkw8sm2nbz3o1d7su0eigaaq8</a><br>Website: <a href="https://ipfs.io/ipns/k2k4r8kzhbfoy6m1hxph0z6gtylkkxnrkz5f5upsks53eida04h4c60d">https://ipfs.io/ipns/k2k4r8kzhbfoy6m1hxph0z6gtylkkxnrkz5f5upsks53eida04h4c60d</a></p>
+<body><div id="readme" class="container"><article class="markdown-body entry-content"><h1 id="2022-04-03">2022-04-03</h1>
+<p>Updated gaze-coordinates-mapping-algorithm to achieve better accuracy when the monitor does not assume the shape of a perfect rectangle on the world camera image. </p>
+<h1 id="2022-03-28">2022-03-28</h1>
+<p>Added mouse-click simulation via eye-winking. </p>
+<h1 id="2021-12">2021-12</h1>
+<p>First release.</p>
 </article></div><div style="background-color: #b4b2b2;width: 50px;height:50px;line-height: 50px;text-align: center;position: fixed;bottom: 10px;right: 10px;padding-top:5px;" onclick="document.documentElement.scrollTop = document.body.scrollTop =0;">
   <svg t="1533629773982" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1035" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css">@font-face { font-family: uc-nexus-iconfont; src: url("chrome-extension://pogijhnlcfmcppgimcaccdkmbedjkmhi/res/font_9qmmi8b8jsxxbt9.woff") format("woff"), url("chrome-extension://pogijhnlcfmcppgimcaccdkmbedjkmhi/res/font_9qmmi8b8jsxxbt9.ttf") format("truetype"); }
   </style></defs><path d="M536.255427 195.182354c-7.804756-7.804756-17.966187-11.615549-28.311813-11.615549-9.43693 0-18.874883 3.449565-26.496467 10.163477-2.360767 1.452071-4.356214 3.267417-6.352685 5.262864L218.47792 455.611735c-15.607466 15.60542-15.607466 40.834011 0 56.43943 15.607466 15.607466 41.558511 15.607466 57.167001 0l193.46013-192.733583 0 600.526219c0 22.1423 17.787108 39.927361 39.927361 39.927361 22.140253 0 39.927361-17.785062 39.927361-39.927361L548.959773 319.317583 737.15704 508.422522c15.607466 15.607466 40.469714 15.607466 56.078203 0 15.607466-15.607466 15.425318-40.834011-0.182149-56.441477L536.255427 195.182354 536.255427 195.182354z" p-id="1036" fill="#333"></path><path d="M101.784174 143.097092l816.674071 0c22.140253 0 39.925315-17.785062 39.925315-39.927361 0-22.140253-17.784038-39.925315-39.925315-39.925315L101.784174 63.244416c-22.140253 0-39.927361 17.785062-39.927361 39.925315C61.856813 125.31203 79.643921 143.097092 101.784174 143.097092L101.784174 143.097092z" p-id="1037" fill="#333"></path></svg>

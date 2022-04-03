@@ -1,0 +1,1 @@
+python cythonise_coordinatemapper.py build_ext --inplace
