@@ -9,7 +9,6 @@ So far I have focussed on getting monitor recognition on the image frames of the
 The project is therefore currently at a proof-of-concept stage, demonstrating that an almost usable accuracy (up to around 50px on a 1920×1080px screen, an error of roughly 3% relative to the screen's width) can be achieved for cursor control using PupilCore's eye-tracking.
 
 #### ToDo
-__Gaze Mapping World-Camera to Screen:__ The current mathematical algorithm which maps the user's gaze position from the World Camera's image frame to the user's screen assumes that the image of the screen on the World Camera is approximately rectangular. A more complex algorithm that does not make this approximation should yield more accurate results.  
 __Cursor Clicks:__ A lot of different methods can be used to simulate mouse clicks, such as winks, mouth-movements or keystrokes (currently only eye winks are implemented).  
 __Plugin Menu:__ As users are highly likely to want to experiment with and customise the mouse-clicks part of CursorControl, I should also build a GUI plugin settings menu for this (and other things).  
 
