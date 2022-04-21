@@ -2,4 +2,5 @@
 WebPublish
 WebSite
 DemoVideo
+*.html
 .gitignore
