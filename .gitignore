@@ -4,3 +4,5 @@ WebSite
 DemoVideo
 *.html
 .gitignore
+publish.py
+__project__.py

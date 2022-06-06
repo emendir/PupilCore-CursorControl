@@ -63,7 +63,5 @@ Tested on Ubuntu 20.
 
 
 ## Links
-This project is also hosted on IPFS.
-
-Source Code: https://ipfs.io/ipns/k2k4r8nekx5gmqjhqpx9h6vowf39bkxgkw8sm2nbz3o1d7su0eigaaq8  
-Website: https://ipfs.io/ipns/k2k4r8kzhbfoy6m1hxph0z6gtylkkxnrkz5f5upsks53eida04h4c60d
+This project's IPFS URL:  
+[ipns://k2k4r8nismm5mmgrox2fci816xvj4l4cudnuc55gkfoealjuiaexbsup#PupilCore-CursorControl](https://ipfs.io/ipns/k2k4r8nismm5mmgrox2fci816xvj4l4cudnuc55gkfoealjuiaexbsup#PupilCore-CursorControl)
