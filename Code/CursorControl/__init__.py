@@ -12,7 +12,7 @@ from math import sqrt, atan, pi, cos, sin
 import time
 
 from CursorControl.Line import *
-from CursorControl.CoordinateMapper import MapCoordinates
+from CursorControl.CoordinateMapper import MapCoordinates, TestMappedCoordinates
 from CursorControl import mouse
 
 from CursorControl.CalibrationScreen import CalibrationScreen
@@ -272,11 +272,21 @@ class CursorControl(Plugin):
                     )
 
                     if self.gaze_location:   # if PupilCore has gaze location values
+                        draw_polyline(
+                            [(self.gaze_location[0] - 1, self.gaze_location[1] - 1),
+                             (self.gaze_location[0] - 1,
+                              self.gaze_location[1] + 1),
+                             (self.gaze_location[0] + 1,
+                              self.gaze_location[1] + 1),
+                             (self.gaze_location[0] + 1, self.gaze_location[1] - 1)],
+                            3, RGBA(1.0, 1.0, 1.0, 1), line_type=gl.GL_LINE_LOOP
+                        )
+
                         # # NOTE: this code approximates the shape of the screen
                         # #       as it appears on the WorldCamera image to a rectangle
                         #
                         # # the rotation of the screen relative to the WorldCameraImage
-                        # av_slope = (scr_top.v + scr_bot.v) / 2
+                        # av_slope = (scr_top.slope() + scr_bot.slope()) / 2
                         # screen_rotation = atan(av_slope)
                         #
                         # # coordinates of user's gaze-point on the WorldCamera image
@@ -320,20 +330,34 @@ class CursorControl(Plugin):
                         #                  * (self.screen_resolution[1] - 2 * self.calib_marker_pixel_size) / screen_height)   \
                         #     + self.calib_marker_pixel_size
                         scr_upright_coordinates = [
-                            (scr_0[0], self.screen_resolution[1]-scr_0[1]),
-                            (scr_1[0], self.screen_resolution[1]-scr_1[1]),
-                            (scr_2[0], self.screen_resolution[1]-scr_2[1]),
-                            (scr_3[0], self.screen_resolution[1]-scr_3[1]),
+                            (scr_0[0], self.screen_resolution[1] - scr_0[1]),
+                            (scr_1[0], self.screen_resolution[1] - scr_1[1]),
+                            (scr_2[0], self.screen_resolution[1] - scr_2[1]),
+                            (scr_3[0], self.screen_resolution[1] - scr_3[1]),
+                        ]
+                        scr_coordinates = [
+                            (scr_0[0], scr_0[1]),
+                            (scr_1[0], scr_1[1]),
+                            (scr_2[0], scr_2[1]),
+                            (scr_3[0], scr_3[1]),
                         ]
                         result = MapCoordinates(
-                            (self.gaze_location[0], self.gaze_location[1]),
+                            (self.gaze_location[0],
+                             self.screen_resolution[1] - self.gaze_location[1]),
                             scr_upright_coordinates,
-                            (self.screen_resolution[0], self.screen_resolution[1])
+                            (self.screen_resolution[0],
+                             self.screen_resolution[1])
                         )
+
                         if not result:
                             return
+                        # print("Cursor: ", (round(result[0]), round(result[1])))
                         gaze_scr_x, gaze_scr_y = result
-                        gaze_scr_y = self.screen_resolution[1]+gaze_scr_y
+                        gaze_scr_y = self.screen_resolution[1] - gaze_scr_y
+                        print("Cursor: ", (round(gaze_scr_x), round(gaze_scr_y)))
+
+                        # print("Corners: ", scr_0[1], scr_2[1])
+
                         # print(gaze_scr_x, gaze_scr_y)
                         # print([scr_0, scr_1, scr_2, scr_3])
                         # if the measured gaze is only slightly outside of the
@@ -375,10 +399,26 @@ class CursorControl(Plugin):
                             gaze_stabilised_x = sum_x / cursor_stability
                             gaze_stabilised_y = sum_y / cursor_stability
 
+                            test_results = TestMappedCoordinates(
+                                (gaze_scr_x,
+                                 self.screen_resolution[1] - gaze_scr_y),
+                                scr_coordinates,
+                                (self.screen_resolution[0],
+                                 self.screen_resolution[1])
+                            )
+                            draw_polyline(
+                                [test_results[0].point1, test_results[0].point2], 3, RGBA(1.0, 0.0, 1, 1), line_type=gl.GL_LINE_LOOP
+                            )
+                            draw_polyline(
+                                [test_results[1].point1, test_results[1].point2], 3, RGBA(1.0, 0.0, 1, 1), line_type=gl.GL_LINE_LOOP
+                            )
+
                             # moving the cursor to the user's gaze point
                             mouse.move(gaze_stabilised_x, gaze_stabilised_y)
+                            # print("Cursor: ", (round(gaze_stabilised_x), round(gaze_stabilised_y)))
                         else:
-                            print("Gaze is out of bounds.", gaze_scr_x, gaze_scr_y)
+                            print("Gaze is out of bounds.",
+                                  gaze_scr_x, gaze_scr_y)
 
     def recent_events(self, events):
         """Gets the latest values eye-gaze and plugin data."""

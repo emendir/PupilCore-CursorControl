@@ -32,3 +32,43 @@ def MapCoordinates(coordinates, corners, resolution):
         ((c[1] + p * (d[1] - c[1])) - (a[1] + p * (b[1] - a[1])))
     # print("q:", q)
     return (p * resolution[0], q * resolution[1])
+
+
+def TestMappedCoordinates(coordinates, corners, resolution):
+    from CursorControl.Line import Line, PointFurtherOn, Intersection, DistanceTwixPoints
+    im_lower_border = Line(corners[0], corners[1])
+    im_left_border = Line(corners[0], corners[2])
+    im_top_border = Line(corners[2], corners[3])
+    im_right_border = Line(corners[1], corners[3])
+    # print("Resolution:", (coordinates[0] / resolution[0], coordinates[1] / resolution[1]))
+    im_coordinates_x = Line(
+        (
+            corners[0][0] + (corners[1][0] - corners[0][0]) *
+            (coordinates[0] / resolution[0]),
+            corners[0][1] + (corners[1][1] - corners[0][1]) *
+            (coordinates[1] / resolution[1])
+        ),
+        (
+            corners[2][0] + (corners[3][0] - corners[2][0]) *
+            (coordinates[0] / resolution[0]),
+            corners[2][1] + (corners[3][1] - corners[2][1]) *
+            (coordinates[1] / resolution[1])
+        )
+    )
+    im_coordinates_y = Line(
+        (
+            corners[0][0] + (corners[2][0] - corners[0][0]) *
+            (coordinates[0] / resolution[0]),
+            corners[0][1] + (corners[2][1] - corners[0][1]) *
+            (coordinates[1] / resolution[1])),
+        (
+            corners[1][0] + (corners[3][0] - corners[1][0]) *
+            (coordinates[0] / resolution[0]),
+            corners[1][1] + (corners[3][1] - corners[1][1]) *
+            (coordinates[1] / resolution[1])
+        )
+
+
+
+    )
+    return im_coordinates_x, im_coordinates_y
