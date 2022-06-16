@@ -121,7 +121,7 @@ class CalibrationScreen():
         glClearColor(1.0, 1.0, 1.0, 1)
 
     def CleanUp(self):
-        print("STOPPING")
+        # print("STOPPING")
         glfw.destroy_window(self.window)
         # glfw.terminate()
         logger.debug("Closed Screen Calibration window.")
